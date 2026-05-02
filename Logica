@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treinamento de Raciocínio Lógico</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+:root {
+–bg: #0f0e17;
+–card: #1a1a2e;
+–card2: #16213e;
+–accent: #f5a623;
+–accent2: #e63946;
+–green: #06d6a0;
+–purple: #a855f7;
+–blue: #3b82f6;
+–text: #fffffe;
+–muted: #a7a9be;
+–border: rgba(255,255,255,0.08);
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Nunito’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* Stars background */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+radial-gradient(1px 1px at 20% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
+radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+radial-gradient(1px 1px at 45% 75%, rgba(255,255,255,0.2) 0%, transparent 100%);
+pointer-events: none;
+z-index: 0;
+}
+
+.container {
+max-width: 760px;
+margin: 0 auto;
+padding: 24px 16px 60px;
+position: relative;
+z-index: 1;
+}
+
+/* Header */
+.header {
+text-align: center;
+margin-bottom: 32px;
+}
+
+.header .emoji-row {
+font-size: 2.4rem;
+margin-bottom: 8px;
+animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-8px); }
+}
+
+.header h1 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 2rem;
+background: linear-gradient(135deg, var(–accent), var(–purple));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+line-height: 1.2;
+margin-bottom: 6px;
+}
+
+.header p {
+color: var(–muted);
+font-size: 0.95rem;
+font-weight: 600;
+}
+
+/* Progress bar */
+.progress-area {
+margin-bottom: 24px;
+}
+
+.progress-meta {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+
+.progress-meta span {
+font-size: 0.85rem;
+font-weight: 700;
+color: var(–muted);
+}
+
+.progress-meta .score-badge {
+background: linear-gradient(135deg, var(–accent), #ff6b35);
+color: #000;
+border-radius: 20px;
+padding: 3px 12px;
+font-size: 0.82rem;
+font-weight: 800;
+}
+
+.progress-bar-bg {
+background: var(–card);
+border-radius: 99px;
+height: 10px;
+overflow: hidden;
+border: 1px solid var(–border);
+}
+
+.progress-bar-fill {
+height: 100%;
+border-radius: 99px;
+background: linear-gradient(90deg, var(–purple), var(–accent));
+transition: width 0.5s ease;
+}
+
+/* Question card */
+.question-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 20px;
+padding: 28px 24px;
+margin-bottom: 20px;
+position: relative;
+overflow: hidden;
+animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn {
+from { opacity: 0; transform: translateY(20px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.question-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, var(–purple), var(–accent), var(–green));
+}
+
+.category-tag {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: rgba(168, 85, 247, 0.15);
+border: 1px solid rgba(168, 85, 247, 0.3);
+color: var(–purple);
+border-radius: 99px;
+padding: 4px 12px;
+font-size: 0.78rem;
+font-weight: 700;
+margin-bottom: 16px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.question-number {
+font-size: 0.8rem;
+font-weight: 700;
+color: var(–muted);
+margin-bottom: 10px;
+}
+
+.question-text {
+font-size: 1.05rem;
+font-weight: 700;
+line-height: 1.6;
+color: var(–text);
+margin-bottom: 8px;
+}
+
+.question-source {
+font-size: 0.75rem;
+color: var(–muted);
+font-style: italic;
+margin-bottom: 24px;
+opacity: 0.7;
+}
+
+/* Options */
+.options {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.option-btn {
+background: var(–card2);
+border: 2px solid var(–border);
+border-radius: 14px;
+padding: 14px 18px;
+color: var(–text);
+font-family: ‘Nunito’, sans-serif;
+font-size: 0.95rem;
+font-weight: 600;
+cursor: pointer;
+text-align: left;
+display: flex;
+align-items: center;
+gap: 12px;
+transition: all 0.2s ease;
+position: relative;
+overflow: hidden;
+}
+
+.option-btn:hover:not(:disabled) {
+border-color: var(–purple);
+background: rgba(168, 85, 247, 0.1);
+transform: translateX(4px);
+}
+
+.option-letter {
+width: 30px;
+height: 30px;
+border-radius: 50%;
+background: rgba(255,255,255,0.06);
+border: 2px solid rgba(255,255,255,0.15);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.82rem;
+font-weight: 800;
+flex-shrink: 0;
+transition: all 0.2s;
+}
+
+.option-btn.correct {
+border-color: var(–green);
+background: rgba(6, 214, 160, 0.12);
+}
+
+.option-btn.correct .option-letter {
+background: var(–green);
+border-color: var(–green);
+color: #000;
+}
+
+.option-btn.wrong {
+border-color: var(–accent2);
+background: rgba(230, 57, 70, 0.12);
+}
+
+.option-btn.wrong .option-letter {
+background: var(–accent2);
+border-color: var(–accent2);
+color: #fff;
+}
+
+.option-btn:disabled { cursor: default; }
+
+/* Feedback */
+.feedback-box {
+display: none;
+border-radius: 16px;
+padding: 16px 20px;
+margin-top: 16px;
+font-size: 0.9rem;
+line-height: 1.6;
+font-weight: 600;
+animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback-box.correct {
+background: rgba(6, 214, 160, 0.1);
+border: 1px solid rgba(6, 214, 160, 0.3);
+color: var(–green);
+}
+
+.feedback-box.wrong {
+background: rgba(230, 57, 70, 0.1);
+border: 1px solid rgba(230, 57, 70, 0.3);
+color: #ff8a94;
+}
+
+.feedback-box .fb-title {
+font-size: 1rem;
+font-weight: 800;
+margin-bottom: 6px;
+}
+
+.feedback-box .fb-explanation {
+color: var(–muted);
+font-weight: 600;
+font-size: 0.88rem;
+}
+
+/* Next button */
+.next-btn {
+display: none;
+width: 100%;
+background: linear-gradient(135deg, var(–purple), var(–blue));
+color: #fff;
+border: none;
+border-radius: 14px;
+padding: 16px;
+font-family: ‘Nunito’, sans-serif;
+font-size: 1rem;
+font-weight: 800;
+cursor: pointer;
+margin-top: 16px;
+transition: all 0.2s;
+letter-spacing: 0.3px;
+}
+
+.next-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+}
+
+/* Result Screen */
+.result-screen {
+display: none;
+text-align: center;
+animation: slideIn 0.5s ease;
+}
+
+.result-trophy {
+font-size: 5rem;
+margin-bottom: 16px;
+animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+0%, 100% { transform: translateY(0) rotate(-5deg); }
+50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+.result-title {
+font-family: ‘Fredoka One’, cursive;
+font-size: 2.2rem;
+margin-bottom: 8px;
+background: linear-gradient(135deg, var(–accent), var(–purple));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+}
+
+.result-subtitle {
+color: var(–muted);
+font-size: 1rem;
+font-weight: 600;
+margin-bottom: 32px;
+}
+
+.result-stats {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 12px;
+margin-bottom: 32px;
+}
+
+.stat-box {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 16px;
+padding: 20px 12px;
+}
+
+.stat-number {
+font-family: ‘Fredoka One’, cursive;
+font-size: 2.2rem;
+line-height: 1;
+margin-bottom: 4px;
+}
+
+.stat-label {
+font-size: 0.78rem;
+font-weight: 700;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.stat-box:nth-child(1) .stat-number { color: var(–green); }
+.stat-box:nth-child(2) .stat-number { color: var(–accent2); }
+.stat-box:nth-child(3) .stat-number { color: var(–accent); }
+
+.review-list {
+text-align: left;
+margin-bottom: 28px;
+}
+
+.review-list h3 {
+font-size: 0.85rem;
+font-weight: 800;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 0.8px;
+margin-bottom: 12px;
+}
+
+.review-item {
+background: var(–card);
+border-radius: 12px;
+padding: 12px 16px;
+margin-bottom: 8px;
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 0.88rem;
+font-weight: 600;
+}
+
+.review-dot {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+.review-dot.ok { background: var(–green); }
+.review-dot.fail { background: var(–accent2); }
+
+.restart-btn {
+width: 100%;
+background: linear-gradient(135deg, var(–accent), #ff6b35);
+color: #000;
+border: none;
+border-radius: 14px;
+padding: 18px;
+font-family: ‘Nunito’, sans-serif;
+font-size: 1.1rem;
+font-weight: 900;
+cursor: pointer;
+transition: all 0.2s;
+letter-spacing: 0.3px;
+}
+
+.restart-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 10px 28px rgba(245, 166, 35, 0.4);
+}
+
+/* Congrats message */
+.congrats-msg {
+font-size: 1rem;
+font-weight: 700;
+color: var(–text);
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 14px;
+padding: 16px 20px;
+margin-bottom: 24px;
+line-height: 1.6;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="emoji-row">🧠⚡🎯</div>
+    <h1>Treinamento de Raciocínio Lógico</h1>
+    <p>Questões adaptadas de concursos públicos • Nível: Iniciante</p>
+  </div>
+
+  <!-- Quiz area -->
+
+  <div id="quiz-area">
+    <div class="progress-area">
+      <div class="progress-meta">
+        <span id="question-counter">Questão 1 de 10</span>
+        <span class="score-badge" id="score-badge">✨ 0 pontos</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+```
+<div class="question-card" id="question-card">
+  <div class="category-tag" id="q-category">🔢 Sequências</div>
+  <div class="question-number" id="q-number">QUESTÃO 1</div>
+  <div class="question-text" id="q-text"></div>
+  <div class="question-source" id="q-source"></div>
+  <div class="options" id="options-area"></div>
+  <div class="feedback-box" id="feedback"></div>
+  <button class="next-btn" id="next-btn" onclick="nextQuestion()">Próxima questão →</button>
+</div>
+```
+
+  </div>
+
+  <!-- Result screen -->
+
+  <div class="result-screen" id="result-screen">
+    <div class="result-trophy" id="result-trophy">🏆</div>
+    <div class="result-title" id="result-title">Incrível!</div>
+    <div class="result-subtitle" id="result-subtitle">Você completou o treino!</div>
+
+```
+<div class="congrats-msg" id="congrats-msg"></div>
+
+<div class="result-stats">
+  <div class="stat-box">
+    <div class="stat-number" id="r-correct">0</div>
+    <div class="stat-label">Acertos</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-number" id="r-wrong">0</div>
+    <div class="stat-label">Erros</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-number" id="r-pct">0%</div>
+    <div class="stat-label">Aproveitamento</div>
+  </div>
+</div>
+
+<div class="review-list">
+  <h3>📋 Resumo das questões</h3>
+  <div id="review-items"></div>
+</div>
+
+<button class="restart-btn" onclick="restartQuiz()">🔄 Tentar Novamente!</button>
+```
+
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    category: "🔢 Sequências Numéricas",
+    text: "Qual é o próximo número na sequência? 2, 4, 6, 8, __",
+    options: ["9", "10", "11", "12"],
+    correct: 1,
+    source: "Adaptada de: CESPE/CEBRASPE — Concurso Público Municipal",
+    explanation: "A sequência aumenta de 2 em 2 (números pares). Depois do 8 vem o 10."
+  },
+  {
+    category: "🔢 Sequências Numéricas",
+    text: "Observe a sequência: 1, 4, 9, 16, 25, __. Qual é o próximo número?",
+    options: ["30", "36", "32", "49"],
+    correct: 1,
+    source: "Adaptada de: FCC — Concurso para Auxiliar Administrativo",
+    explanation: "São os quadrados perfeitos: 1²=1, 2²=4, 3²=9, 4²=16, 5²=25, 6²=36."
+  },
+  {
+    category: "🧩 Lógica de Situação",
+    text: "Ana é mais alta que Bia. Bia é mais alta que Carol. Quem é a mais baixa das três?",
+    options: ["Ana", "Bia", "Carol", "Todas têm a mesma altura"],
+    correct: 2,
+    source: "Adaptada de: VUNESP — Processo Seletivo Municipal",
+    explanation: "Ana > Bia > Carol. Como Carol é menor que Bia, e Bia é menor que Ana, Carol é a mais baixa."
+  },
+  {
+    category: "🧩 Lógica de Situação",
+    text: "Todos os gatos são animais. Mimi é um gato. O que podemos concluir?",
+    options: ["Mimi é um cachorro", "Mimi é um animal", "Mimi não é um animal", "Nada pode ser concluído"],
+    correct: 1,
+    source: "Adaptada de: IBGE — Recenseador",
+    explanation: "Se todos os gatos são animais, e Mimi é um gato, então Mimi obrigatoriamente é um animal."
+  },
+  {
+    category: "🎭 Verdadeiro ou Falso",
+    text: "Pedro diz: 'Eu sempre minto.' Se essa afirmação for verdadeira, então Pedro está dizendo a verdade — mas ele afirmou que sempre mente. Se for falsa, então ele nem sempre mente, e pode estar dizendo a verdade agora. Essa situação é chamada de:",
+    options: ["Sequência lógica", "Paradoxo", "Silogismo", "Hipótese"],
+    correct: 1,
+    source: "Adaptada de: ENADE — questão de raciocínio lógico",
+    explanation: "É um paradoxo: uma situação onde a afirmação contradiz a si mesma, sem ter resposta certa."
+  },
+  {
+    category: "🔢 Sequências Numéricas",
+    text: "Qual é o número que falta? 3, 6, 12, 24, __",
+    options: ["36", "42", "48", "30"],
+    correct: 2,
+    source: "Adaptada de: FUNDATEC — Prefeitura de Porto Alegre",
+    explanation: "Cada número é multiplicado por 2: 3×2=6, 6×2=12, 12×2=24, 24×2=48."
+  },
+  {
+    category: "🏠 Raciocínio Espacial",
+    text: "Um quadrado tem 4 lados iguais. Se dobramos o lado de um quadrado de 3 cm para 6 cm, quanto fica o perímetro (soma de todos os lados)?",
+    options: ["12 cm", "18 cm", "24 cm", "36 cm"],
+    correct: 2,
+    source: "Adaptada de: CESPE/CEBRASPE — Técnico Administrativo INSS",
+    explanation: "Novo lado = 6 cm. Perímetro = 4 × 6 = 24 cm."
+  },
+  {
+    category: "🧩 Lógica de Situação",
+    text: "Em uma prova com 20 questões, João acertou 3/4 das questões. Quantas questões João acertou?",
+    options: ["12", "14", "15", "16"],
+    correct: 2,
+    source: "Adaptada de: FGV — Agente Administrativo",
+    explanation: "3/4 de 20 = (3 × 20) ÷ 4 = 60 ÷ 4 = 15 questões."
+  },
+  {
+    category: "🎲 Combinações",
+    text: "Uma escola serve 3 tipos de suco (laranja, uva e maçã) e 2 tipos de lanche (pão e biscoito). De quantas combinações diferentes um aluno pode escolher 1 suco e 1 lanche?",
+    options: ["5", "6", "4", "8"],
+    correct: 1,
+    source: "Adaptada de: OBJETIVA — Prefeitura de Nonoai/RS",
+    explanation: "3 sucos × 2 lanches = 6 combinações possíveis (laranja+pão, laranja+biscoito, uva+pão, uva+biscoito, maçã+pão, maçã+biscoito)."
+  },
+  {
+    category: "🕐 Raciocínio Temporal",
+    text: "Se hoje é quarta-feira e daqui a 10 dias haverá uma festa, em que dia da semana será a festa?",
+    options: ["Sábado", "Sexta-feira", "Domingo", "Segunda-feira"],
+    correct: 0,
+    source: "Adaptada de: VUNESP — Agente de Correios",
+    explanation: "Quarta + 10 dias: 7 dias = outra quarta. Mais 3 dias = sábado."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answers = [];
+
+function loadQuestion() {
+  const q = questions[current];
+  const letters = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('q-category').textContent = q.category;
+  document.getElementById('q-number').textContent = `QUESTÃO ${current + 1}`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-source').textContent = q.source;
+  document.getElementById('question-counter').textContent = `Questão ${current + 1} de ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('score-badge').textContent = `✨ ${score} pontos`;
+
+  const optionsArea = document.getElementById('options-area');
+  optionsArea.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    optionsArea.appendChild(btn);
+  });
+
+  document.getElementById('feedback').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+
+  // Animate card
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'slideIn 0.4s ease';
+}
+
+function selectAnswer(index) {
+  const q = questions[current];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  const isCorrect = index === q.correct;
+  buttons[index].classList.add(isCorrect ? 'correct' : 'wrong');
+
+  if (!isCorrect) {
+    buttons[q.correct].classList.add('correct');
+  }
+
+  if (isCorrect) score += 10;
+  answers.push({ correct: isCorrect, text: q.text });
+
+  const fb = document.getElementById('feedback');
+  fb.style.display = 'block';
+  fb.className = `feedback-box ${isCorrect ? 'correct' : 'wrong'}`;
+
+  const emoji = isCorrect
+    ? ['🎉 Arrasei!', '🌟 Mandou bem!', '✅ Correto!', '🔥 Top!'][Math.floor(Math.random() * 4)]
+    : ['❌ Quase!', '😬 Ops!', '💡 Atenção!', '🤔 Vamos rever!'][Math.floor(Math.random() * 4)];
+
+  fb.innerHTML = `
+    <div class="fb-title">${emoji}</div>
+    <div class="fb-explanation">💬 ${q.explanation}</div>
+  `;
+
+  document.getElementById('next-btn').style.display = 'block';
+  document.getElementById('score-badge').textContent = `✨ ${score} pontos`;
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const rs = document.getElementById('result-screen');
+  rs.style.display = 'block';
+
+  const correct = answers.filter(a => a.correct).length;
+  const wrong = answers.length - correct;
+  const pct = Math.round((correct / answers.length) * 100);
+
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = wrong;
+  document.getElementById('r-pct').textContent = pct + '%';
+
+  let trophy = '🏅', title = 'Bom trabalho!', msg = '';
+  if (pct === 100) {
+    trophy = '🏆'; title = 'Perfeita!';
+    msg = 'Uau! Você acertou TUDO! Seu raciocínio lógico está afiado! Continue praticando assim e nenhum desafio vai te parar! 🌟';
+  } else if (pct >= 80) {
+    trophy = '🥇'; title = 'Ótimo resultado!';
+    msg = `Você acertou ${correct} de ${questions.length} questões. Está indo muito bem! Revise os erros e tente superar esse resultado! 💪`;
+  } else if (pct >= 60) {
+    trophy = '🥈'; title = 'Bom trabalho!';
+    msg = `Você acertou ${correct} questões. Está progredindo! Praticar todo dia vai melhorar muito seu raciocínio lógico. 📚`;
+  } else {
+    trophy = '🌱'; title = 'Continue praticando!';
+    msg = `Acertou ${correct} questões. Não desanime! Todo expert já foi iniciante. Leia as explicações e tente de novo! 💡`;
+  }
+
+  document.getElementById('result-trophy').textContent = trophy;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('congrats-msg').textContent = msg;
+
+  const reviewDiv = document.getElementById('review-items');
+  reviewDiv.innerHTML = '';
+  answers.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    div.innerHTML = `
+      <span class="review-dot ${a.correct ? 'ok' : 'fail'}"></span>
+      <span>Q${i + 1}: ${questions[i].text.substring(0, 55)}...</span>
+    `;
+    reviewDiv.appendChild(div);
+  });
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  answers = [];
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('result-screen').style.display = 'none';
+  loadQuestion();
+}
+
+// Start
+loadQuestion();
+</script>
+
+</body>
+</html>
